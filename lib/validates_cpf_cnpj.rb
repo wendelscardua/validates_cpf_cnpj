@@ -4,30 +4,61 @@ require 'validates_cpf_cnpj/cnpj'
 
 module ActiveModel
   module Validations
+    module CpfValidation
+      def validate_cpf(record, attr_name, value)
+        return if (value.to_s.match(/\A\d{11}\z/) || value.to_s.match(/\A\d{3}\.\d{3}\.\d{3}\-\d{2}\z/)) &&
+                  ValidatesCpfCnpj::Cpf.valid?(value)
+
+        record.errors.add(attr_name)
+      end
+    end
+
+    module CnpjValidation
+      def validate_cnpj(record, attr_name, value)
+        return if (value.to_s.match(/\A\d{14}\z/) || value.to_s.match(/\A\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}\z/)) &&
+                  ValidatesCpfCnpj::Cnpj.valid?(value)
+
+        record.errors.add(attr_name)
+      end
+    end
+
     class CpfOrCnpjValidator < ActiveModel::EachValidator
-      include ValidatesCpfCnpj
+      include CpfValidation
+      include CnpjValidation
 
       def validate_each(record, attr_name, value)
-        return if (options[:allow_nil] and value.nil?) or (options[:allow_blank] and value.blank?)
-        return if (options[:if] == false) or (options[:unless] == true)
-        return if (options[:on].to_s == 'create' and not record.new_record?) or (options[:on].to_s == 'update' and record.new_record?)
+        return unless should_validate? record, value
 
         if value.to_s.gsub(/[^0-9]/, '').length <= 11
-          if (not value.to_s.match(/\A\d{11}\z/) and not value.to_s.match(/\A\d{3}\.\d{3}\.\d{3}\-\d{2}\z/)) or not Cpf.valid?(value)
-            record.errors.add(attr_name)
-          end
+          validate_cpf record, attr_name, value
         else
-          if (not value.to_s.match(/\A\d{14}\z/) and not value.to_s.match(/\A\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}\z/)) or not Cnpj.valid?(value)
-            record.errors.add(attr_name)
-          end
+          validate_cnpj record, attr_name, value
         end
+      end
+
+      private def should_validate?(record, value)
+        return if (options[:allow_nil] && value.nil?) || (options[:allow_blank] && value.blank?)
+        return if (options[:if] == false) || (options[:unless] == true)
+        return if (options[:on].to_s == 'create' && !record.new_record?) || (options[:on].to_s == 'update' && record.new_record?)
+
+        true
       end
     end
 
     class CpfValidator < CpfOrCnpjValidator
+      def validate_each(record, attr_name, value)
+        return unless should_validate? record, value
+
+        validate_cpf record, attr_name, value
+      end
     end
 
     class CnpjValidator < CpfOrCnpjValidator
+      def validate_each(record, attr_name, value)
+        return unless should_validate? record, value
+
+        validate_cnpj record, attr_name, value
+      end
     end
 
     module HelperMethods
