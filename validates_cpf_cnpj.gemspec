@@ -11,8 +11,6 @@ Gem::Specification.new do |s|
   s.summary     = %q{CPF/CNPJ ActiveModel validations}
   s.description = %q{CPF and CNPJ validations for ActiveModel and Rails}
 
-  s.rubyforge_project = "validates_cpf_cnpj"
-
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }

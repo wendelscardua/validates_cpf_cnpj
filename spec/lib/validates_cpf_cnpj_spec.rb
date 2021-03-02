@@ -18,6 +18,18 @@ describe ValidatesCpfCnpj do
         end
       end
 
+      it 'value is a valid CNPJ' do
+        person = Person.new(:code => '05393625000184')
+        person.validates_cpf(:code)
+        expect(person.errors).to_not be_empty
+      end
+
+      it 'value is a valid formatted CNPJ' do
+        person = Person.new(:code => '05.393.625/0001-84')
+        person.validates_cpf(:code)
+        expect(person.errors).to_not be_empty
+      end
+
       it 'value is nil' do
         person = Person.new(:code => nil)
         person.validates_cpf(:code)
@@ -116,6 +128,17 @@ describe ValidatesCpfCnpj do
         end
       end
 
+      it 'value is a valid CPF' do
+        person = Person.new(:code => '80033787883')
+        person.validates_cnpj(:code)
+        expect(person.errors).to_not be_empty
+      end
+
+      it 'value is a valid formatted CPF' do
+        person = Person.new(:code => '800.337.878-83')
+        person.validates_cnpj(:code)
+        expect(person.errors).to_not be_empty
+      end
 
       it 'value is nil' do
         person = Person.new(:code => nil)
