@@ -38,6 +38,14 @@ describe ValidatesCpfCnpj do
         end
       end
 
+      context 'when value is a valid alphanumeric CNPJ' do
+        it 'does not accept it' do
+          person = Person.new(code: '12ABC34501DE35')
+          person.validates_cpf(:code)
+          expect(person.errors).not_to be_empty
+        end
+      end
+
       context 'when value is nil' do
         it 'does not accept it' do
           person = Person.new(code: nil)
@@ -221,6 +229,22 @@ describe ValidatesCpfCnpj do
         end
       end
 
+      context 'when value is a valid alphanumeric CNPJ' do
+        it 'accepts it' do
+          person = Person.new(code: '12ABC34501DE35')
+          person.validates_cnpj(:code)
+          expect(person.errors).to be_empty
+        end
+      end
+
+      context 'when value is a valid formatted alphanumeric CNPJ' do
+        it 'accepts it' do
+          person = Person.new(code: '12.ABC.345/01DE-35')
+          person.validates_cnpj(:code)
+          expect(person.errors).to be_empty
+        end
+      end
+
       context 'when value is nil and :allow_nil or :allow_blank is true' do
         it 'accepts it' do
           person = Person.new(code: nil)
@@ -328,6 +352,14 @@ describe ValidatesCpfCnpj do
       context 'when value is 800.337.878-83' do
         it 'accepts it' do
           person = Person.new(code: '800.337.878-83')
+          person.validates_cpf_or_cnpj(:code)
+          expect(person.errors).to be_empty
+        end
+      end
+
+      context 'when value is a valid alphanumeric CNPJ' do
+        it 'accepts it' do
+          person = Person.new(code: '12ABC34501DE35')
           person.validates_cpf_or_cnpj(:code)
           expect(person.errors).to be_empty
         end
