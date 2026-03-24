@@ -17,8 +17,9 @@ module ActiveModel
 
     module CnpjValidation
       def validate_cnpj(record, attr_name, value)
-        return if (value.to_s.match(/\A\d{14}\z/) || value.to_s.match(%r{\A\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}\z})) &&
-                  ValidatesCpfCnpj::Cnpj.valid?(value)
+        return if (value.to_s.match(/\A[0-9A-Z]{12}\d{2}\z/) ||
+                   value.to_s.match(%r{\A[0-9A-Z]{2}\.[0-9A-Z]{3}\.[0-9A-Z]{3}/[0-9A-Z]{4}-\d{2}\z})) &&
+                  ValidatesCpfCnpj::Cnpj.valid?(value.to_s.upcase.gsub(/[^0-9A-Z]/, ''))
 
         record.errors.add(attr_name)
       end
@@ -31,7 +32,7 @@ module ActiveModel
       def validate_each(record, attr_name, value)
         return unless should_validate? record, value
 
-        if value.to_s.gsub(/[^0-9]/, '').length <= 11
+        if value.to_s.gsub(/[^0-9A-Za-z]/, '').length <= 11
           validate_cpf record, attr_name, value
         else
           validate_cnpj record, attr_name, value
