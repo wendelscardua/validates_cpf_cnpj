@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 require 'validates_cpf_cnpj'
 require 'active_record'
 
 I18n.enforce_available_locales = false
 
 ActiveRecord::Base.establish_connection(
-  :adapter => 'sqlite3',
-  :database => ':memory:'
+  adapter: 'sqlite3',
+  database: ':memory:'
 )
 
 ActiveRecord::Schema.define do
@@ -16,5 +18,4 @@ ActiveRecord::Schema.define do
   end
 end
 
-class Person < ActiveRecord::Base
-end
+Person = Class.new(ActiveRecord::Base)

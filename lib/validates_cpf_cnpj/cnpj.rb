@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ValidatesCpfCnpj
   module Cnpj
     def self.valid?(value)
@@ -7,12 +9,12 @@ module ValidatesCpfCnpj
       if local_value.size == 14
         factor = 0
         2.times do |i|
-          sum = 0;
+          sum = 0
           12.times do |j|
-            sum += local_value.slice(j, 1).to_i * ((11 + i - j) % 8 + 2)
+            sum += local_value.slice(j, 1).to_i * (((11 + i - j) % 8) + 2)
           end
           sum += factor * 2 if i == 1
-          factor = 11 - sum  % 11
+          factor = 11 - (sum % 11)
           factor = 0 if factor > 9
           control << factor.to_s
         end

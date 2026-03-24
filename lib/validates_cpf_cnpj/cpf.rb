@@ -1,11 +1,16 @@
+# frozen_string_literal: true
+
 module ValidatesCpfCnpj
   module Cpf
-    @@invalid_cpfs = %w{12345678909 11111111111 22222222222 33333333333 44444444444 55555555555 66666666666 77777777777 88888888888 99999999999 00000000000}
+    INVALID_CPFS = %w[12345678909 11111111111 22222222222
+                      33333333333 44444444444 55555555555
+                      66666666666 77777777777 88888888888
+                      99999999999 00000000000].freeze
 
     def self.valid?(value)
       local_value = value.gsub(/[^0-9]/, '')
 
-      return false if @@invalid_cpfs.member?(local_value)
+      return false if INVALID_CPFS.member?(local_value)
 
       digit = local_value.slice(-2, 2)
       control = ''

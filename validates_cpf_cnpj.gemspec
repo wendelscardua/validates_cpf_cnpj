@@ -15,16 +15,16 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 3.0'
 
   s.files         = `git ls-files`.split("\n")
-  s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map { |f| File.basename(f) }
   s.require_paths = ['lib']
 
-  s.add_runtime_dependency 'activemodel', '>= 8.0.0'
+  s.add_dependency 'activemodel', '>= 8.0.0'
 
   s.metadata = {
     'homepage_uri' => 'https://github.com/wendelscardua/validates_cpf_cnpj',
     'changelog_uri' => 'https://github.com/wendelscardua/validates_cpf_cnpj/blob/main/CHANGELOG.md',
     'source_code_uri' => 'https://github.com/wendelscardua/validates_cpf_cnpj',
-    'bug_tracker_uri' => 'https://github.com/wendelscardua/validates_cpf_cnpj/issues'
+    'bug_tracker_uri' => 'https://github.com/wendelscardua/validates_cpf_cnpj/issues',
+    'rubygems_mfa_required' => 'true'
   }
 end

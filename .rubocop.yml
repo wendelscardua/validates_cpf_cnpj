@@ -1,0 +1,46 @@
+plugins:
+  - rubocop-performance
+  - rubocop-rspec
+AllCops:
+  NewCops: enable
+Layout/LineLength:
+  Max: 120
+Metrics/AbcSize:
+  Enabled: false
+Metrics/BlockLength:
+  inherit_mode:
+    merge:
+      - Exclude
+      - AllowedMethods
+  Exclude:
+    - spec/**/*
+Metrics/ClassLength:
+  Enabled: false
+Metrics/CyclomaticComplexity:
+  Enabled: false
+Metrics/MethodLength:
+  Enabled: false
+Metrics/ModuleLength:
+  Enabled: false
+Metrics/PerceivedComplexity:
+  Enabled: false
+RSpec/ExampleLength:
+  Enabled: false
+RSpec/NestedGroups:
+  Max: 4
+RSpec/MultipleExpectations:
+  Enabled: false
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+RSpec/RepeatedExampleGroupBody:
+  Enabled: false
+RSpec/RepeatedExampleGroupDescription:
+  Enabled: false
+Style/AsciiComments:
+  Enabled: false
+Style/Documentation:
+  Enabled: false
+Style/EmptyClassDefinition:
+  EnforcedStyle: class_new
+Style/HashSyntax:
+  EnforcedShorthandSyntax: always

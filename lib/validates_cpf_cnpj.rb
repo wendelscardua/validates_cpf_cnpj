@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_model'
 require 'validates_cpf_cnpj/cpf'
 require 'validates_cpf_cnpj/cnpj'
@@ -6,7 +8,7 @@ module ActiveModel
   module Validations
     module CpfValidation
       def validate_cpf(record, attr_name, value)
-        return if (value.to_s.match(/\A\d{11}\z/) || value.to_s.match(/\A\d{3}\.\d{3}\.\d{3}\-\d{2}\z/)) &&
+        return if (value.to_s.match(/\A\d{11}\z/) || value.to_s.match(/\A\d{3}\.\d{3}\.\d{3}-\d{2}\z/)) &&
                   ValidatesCpfCnpj::Cpf.valid?(value)
 
         record.errors.add(attr_name)
@@ -15,7 +17,7 @@ module ActiveModel
 
     module CnpjValidation
       def validate_cnpj(record, attr_name, value)
-        return if (value.to_s.match(/\A\d{14}\z/) || value.to_s.match(/\A\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}\z/)) &&
+        return if (value.to_s.match(/\A\d{14}\z/) || value.to_s.match(%r{\A\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}\z})) &&
                   ValidatesCpfCnpj::Cnpj.valid?(value)
 
         record.errors.add(attr_name)
@@ -36,10 +38,15 @@ module ActiveModel
         end
       end
 
-      private def should_validate?(record, value)
-        return if (options[:allow_nil] && value.nil?) || (options[:allow_blank] && value.blank?)
-        return if (options[:if] == false) || (options[:unless] == true)
-        return if (options[:on].to_s == 'create' && !record.new_record?) || (options[:on].to_s == 'update' && record.new_record?)
+      private
+
+      def should_validate?(record, value)
+        return false if (options[:allow_nil] && value.nil?) || (options[:allow_blank] && value.blank?)
+        return false if (options[:if] == false) || (options[:unless] == true)
+        if (options[:on].to_s == 'create' && !record.new_record?) ||
+           (options[:on].to_s == 'update' && record.new_record?)
+          return false
+        end
 
         true
       end
@@ -63,17 +70,20 @@ module ActiveModel
 
     module HelperMethods
       def validates_cpf(*attr_names)
-        raise ArgumentError, "You need to supply at least one attribute" if attr_names.empty?
+        raise ArgumentError, 'You need to supply at least one attribute' if attr_names.empty?
+
         validates_with CpfValidator, _merge_attributes(attr_names)
       end
 
       def validates_cnpj(*attr_names)
-        raise ArgumentError, "You need to supply at least one attribute" if attr_names.empty?
+        raise ArgumentError, 'You need to supply at least one attribute' if attr_names.empty?
+
         validates_with CnpjValidator, _merge_attributes(attr_names)
       end
 
       def validates_cpf_or_cnpj(*attr_names)
-        raise ArgumentError, "You need to supply at least one attribute" if attr_names.empty?
+        raise ArgumentError, 'You need to supply at least one attribute' if attr_names.empty?
+
         validates_with CpfOrCnpjValidator, _merge_attributes(attr_names)
       end
     end
